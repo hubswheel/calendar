@@ -1,0 +1,8 @@
+{
+  "babelSourcePath": "app/components",
+  "createTranspiledCode": false,
+  "transpileOnSave": true,
+  "suppressTranspileOnSaveMessages": false,
+  "projectRoot": true,
+  "babelMapsAddUrl": false
+}
