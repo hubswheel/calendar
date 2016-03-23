@@ -105,6 +105,9 @@ target/
 #bower
 bower_components
 
+#node
+node_modules/
+
 # jupyter
 *.ipynb
 .ipynb_checkpoints/
