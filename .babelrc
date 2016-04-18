@@ -1,6 +1,14 @@
 {
-  "presets": ["es2015", "react"],
-  "plugins": ["transform-object-assign",
-              "transform-es3-property-literals",
-              "transform-es3-member-expression-literals"]
+    "presets": ["es2015", "react"],
+    "plugins": ["transform-object-assign",
+        "transform-es3-property-literals",
+        "transform-es3-member-expression-literals"
+    ],
+    "env": {
+        "start": {
+            "presets": [
+                "react-hmre"
+            ]
+        }
+    }
 }
