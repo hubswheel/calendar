@@ -50,7 +50,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
 dist/
 downloads/
@@ -64,6 +63,10 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+#build/ usually excluded; index.html need so only bundle excluded
+bundle.js
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

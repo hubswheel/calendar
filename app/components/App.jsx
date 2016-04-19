@@ -1,8 +1,8 @@
 import React from 'react';
-import Note from './Note.jsx';
+import IMACalendar from './IMACalendar.jsx';
 
 export default class App extends React.Component {
   render() {
-    return <Note />;
+    return <IMACalendar/>;
   }
 }
