@@ -6,16 +6,20 @@ import Signal from 'signals'; //  var mySignal = new Signal();
 import {Grid, Row, Col, ButtonGroup, Button, Overlay, DropdownButton, Badge, Label, Table } from 'react-bootstrap';
 import $ from 'jquery';
 import Header from './CalendarHeader';
+import moment from 'moment';
 
 export default class Calendar extends React.Component {
     constructor(props) {
         super(props);
         this._initializeSignals()
+        this.store = {date: this.getInitialDate()}
     }
     _initializeSignals() {
         const pairs = Immutable.List(`
                     dataloaded
-                    monthChangeClicked:changeMonth`
+                    monthChangeClicked:changeMonth
+                    monthChanged
+                `
                 .split(/\n/))
                 .filter(pair => pair)
                 .map(pair => pair.split("#")[0].replace(/\s+/g, "").split(":"));
@@ -26,14 +30,18 @@ export default class Calendar extends React.Component {
                 .forEach(pair => this.on[pair[0]].add(this[pair[1]].bind(this)))
     }
     changeMonth(dir) {
-
+        this.store.date = this.store.date.add(dir, "months")
+        this.on.monthChanged.dispatch(this.store.date)
     }
     //{/*{this.state.showEdit && <CalendarEditor editable={editable}/>}*/}
     //{this.getWeeks(Immutable.List([]), month, firstSunday, groups, users, data, editable)}
+    getInitialDate() {
+        return moment()
+    }
     render() {
         return (
             <Grid fluid={true}>
-                <Header title="Default Calendar" date={new Date()} on={this.on}/>
+                <Header title="Default Calendar" date={this.store.date} on={this.on}/>
             </Grid>
         )
     }

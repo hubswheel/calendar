@@ -40,10 +40,12 @@ const common = {
             include: PATHS.app
         }, {
             test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            loader: "url"
+            loader: "url",
+            include: PATHS.fa
         }, {
             test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            loader: "file"
+            loader: "file",
+            include: PATHS.fa
         }]
     }
 };
@@ -54,9 +56,6 @@ if (TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
         devServer: {
             contentBase: PATHS.build,
-            // Enable history API fallback so HTML5 History API based
-            // routing works. This is a good default that will come
-            // in handy in more complicated setups.
             historyApiFallback: true,
             devtool: 'eval-source-map',
             hot: true,
