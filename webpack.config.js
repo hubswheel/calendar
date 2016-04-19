@@ -5,6 +5,7 @@ const NpmInstallPlugin = require('npm-install-webpack-plugin');
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
     app: path.join(__dirname, 'app'),
+    fa: path.join(__dirname, 'node_modules/react-fa/node_modules/font-awesome'),
     build: path.join(__dirname, 'build')
 };
 
@@ -21,21 +22,28 @@ const common = {
         path: PATHS.build,
         filename: 'bundle.js'
     },
+    plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        })
+    ],
     module: {
         loaders: [{
             test: /\.css$/,
-            loaders: ['style', 'css'],
-            // Include accepts either a path or an array of paths.
-            include: PATHS.app
+            loader: 'style!css',
+            include: [PATHS.app, PATHS.fa]
         }, {
             test: /\.jsx?$/,
-            // Enable caching for improved performance during development
-            // It uses default OS directory by default. If you need something
-            // more custom, pass a path to it. I.e., babel?cacheDirectory=<path>
             loaders: ['babel?cacheDirectory'],
-            // Parse only app files! Without this it will go through entire project.
-            // In addition to being slow, that will most likely result in an error.
             include: PATHS.app
+        }, {
+            test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            loader: "url"
+        }, {
+            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+            loader: "file"
         }]
     }
 };
