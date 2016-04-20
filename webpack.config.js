@@ -5,7 +5,11 @@ const NpmInstallPlugin = require('npm-install-webpack-plugin');
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
     app: path.join(__dirname, 'app'),
-    fa: path.join(__dirname, 'node_modules/react-fa/node_modules/font-awesome'),
+    style: [
+        path.join(__dirname, 'node_modules/react-fa/node_modules/font-awesome'),
+        path.join(__dirname, 'node_modules/bootstrap/dist/css'),
+        path.join(__dirname, 'node_modules/bootstrap/dist/fonts')
+    ],
     build: path.join(__dirname, 'build')
 };
 
@@ -33,7 +37,7 @@ const common = {
         loaders: [{
             test: /\.css$/,
             loader: 'style!css',
-            include: [PATHS.app, PATHS.fa]
+            include: PATHS.style.concat(PATHS.app)
         }, {
             test: /\.jsx?$/,
             loaders: ['babel?cacheDirectory'],
@@ -41,11 +45,11 @@ const common = {
         }, {
             test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
             loader: "url",
-            include: PATHS.fa
+            include: PATHS.style
         }, {
             test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
             loader: "file",
-            include: PATHS.fa
+            include: PATHS.style
         }]
     }
 };
