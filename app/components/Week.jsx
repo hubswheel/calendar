@@ -1,64 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Bootstrap from 'bootstrap'
-// import Immutable from 'immutable';
-// import Signal from 'signals'; //  var mySignal = new Signal();
 import {Grid, Row, Col, ButtonGroup, Button, DropdownButton, Badge, Label } from 'react-bootstrap';
-import $ from 'jquery';
-import moment from 'moment';
+import DateGroup from "./DateGroup"
 
 export default class Week extends React.Component {
     render() {
         const   {date, month, on} = this.props,
                 {dayGroups} = this.props.config,
                 hasGroups = dayGroups && dayGroups.length,
+                none = "-*-none-*-",
                 days = [...Array(7).keys()].map(offset => date.clone().add(offset, "days")),
+                s = {style: {border: "solid #ccc 1px", overflow: "auto"}},
+                format = (index, dt) => ((!index && dt.month() + 1 != month) || (index && dt.date() == 1))
+                                            && dt.format("M/DD")
+                                            || dt.format("DD"),
                 numbers = days.map((dt, index) => (
                     <Col
                         key={`n${index}`}
                         md={1}>
-                        {dt.date()}
-                    </Col>))
+                        {format(index, dt)}
+                    </Col>)),
+                groups = (hasGroups && dayGroups || [none]).map((g, index) => (
+                    <Row key={index}>
+                        {g !== none && (<Col {...s}  md={1} >{g.name}</Col>)}
+                        {days.map((dt, index) => (
+                            <DateGroup
+                                key={index}
+                                group={hasGroups && g || false}
+                                date={dt} />))}
+                    </Row>
+                ))
         return (
             <div>
                 <Row>
-                    {hasGroups && (
-                        <Col md={1}/>
-                    )}
+                    {hasGroups && (<Col md={1} />)}
                     {numbers}
                 </Row>
+                {groups}
             </div>
         )
     }
 }
-//
-//
-//
-//                 var dt = new Date(date); dt.setDate(dt.getDate() + offset); return dt}),
-//             dates = days.map(dt => (
-//                     <Col
-//                         key={app.dateInt(dt)}
-//                         style={{backgroundColor: "#eee", borderTop: "solid #ccc 1px", borderRight: "solid #ccc 1px"}}
-//                         md={1}>
-//                         {dt.getDate()}
-//                     </Col>));
-//         return (
-//             <div style={{minHeight: 100}}>
-//                 <Row>
-//                     <Col
-//                         md={1}
-//                         mdOffset={2}
-//                         style={{borderTop: "solid #ccc 1px"}}/>
-//                      {dates}
-//                 </Row>
-//                 {groups.map(g => (
-//                     <Row key={g.get("id")}>
-//                         <Col
-//                             md={1}
-//                             mdOffset={2}
-//                             style={{borderTop: "solid #eee 1px"}}>
-//                             {g.get("name")}
-//                         </Col>
 //                         {days.map(dt => (
 //                             <DateGroup
 //                                 key={g.get("id") + "_" + app.dateInt(dt)}
@@ -68,8 +48,3 @@ export default class Week extends React.Component {
 //                                 editable={editable}
 //                                 data={data.getIn([dt, g.get("id")])}/>))}
 //                     </Row>
-//                 ))}
-//             </div>
-//         )
-//     }
-// }

@@ -6,12 +6,13 @@ const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
     app: path.join(__dirname, 'app'),
     style: [
-        path.join(__dirname, 'node_modules/react-fa/node_modules/font-awesome'),
+        path.join(__dirname, 'node_modules/react-fa/node_modules/font-awesome'), // use resolve?
         path.join(__dirname, 'node_modules/bootstrap/dist/css'),
         path.join(__dirname, 'node_modules/bootstrap/dist/fonts')
     ],
     build: path.join(__dirname, 'build')
 };
+
 
 process.env.BABEL_ENV = TARGET;
 
@@ -30,7 +31,14 @@ const common = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
-            "window.jQuery": "jquery"
+            "window.jQuery": "jquery",
+            React: "react",
+            ReactDOM: "react-dom",
+            moment: "moment",
+            Bootstrap: "bootstrap",
+            Icon: "react-fa",
+            Immutable: "immutable",
+            Signal: "signals"
         })
     ],
     module: {
@@ -54,8 +62,6 @@ const common = {
     }
 };
 
-
-// Default configuration
 if (TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
         devServer: {

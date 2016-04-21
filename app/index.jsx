@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { Router, Route, Link, hashHistory } from 'react-router'
 import IMACalendar from './components/IMACalendar.jsx';
 import IMAAdmin from './components/IMAAdmin.jsx';

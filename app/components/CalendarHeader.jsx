@@ -1,9 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Bootstrap from 'bootstrap'
-import $ from 'jquery';
-import Icon from 'react-fa'
-import moment from 'moment'
 import { Router, Route, Link } from 'react-router'
 
 export default class Header extends React.Component {
