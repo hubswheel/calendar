@@ -1,10 +1,10 @@
 import Calendar from './Calendar';
+import {fromJS} from 'immutable'
 
 export default class IMACalendar extends Calendar {
     constructor(props) {
         super(props)
-        this.updateConfig(this.getConfig())
-        this.state = Object.assign({}, this.state, {date: moment("12/01/2016", "MM/DD/YYYY")})
+        this.state = {config: fromJS(this.getConfig()), date: moment("12/02/2016", "MM/DD/YYYY")}
     }
     getConfig() {
         return {

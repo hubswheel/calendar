@@ -6,15 +6,15 @@ export default class Header extends React.Component {
         this.state = {date: props.date, config: props.config}
         props.on.dateChanged.add(date => this.setState({date: date}))
         props.on.configUpdated.add(config => {
-            console.log("config", config);
             this.setState({config: config})
         })
     }
     render() {
-        var on = this.props.on,
-            {monthTitleFormat: format, title, canShowAdminLink} = this.state.config,
-            {date} = this.state;
-
+        const   {on, config} = this.props,
+                format = config.get("monthTitleFormat"),
+                title = config.get("title"),
+                canShowAdminLink = config.get("canShowAdminLink"),
+                {date} = this.state;
         return (
             <span>
                 <h2 style={{textAlign: "center"}}>

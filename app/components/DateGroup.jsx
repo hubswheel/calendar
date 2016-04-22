@@ -2,11 +2,11 @@ import {Grid, Row, Col, ButtonGroup, Button, DropdownButton, Badge, Label } from
 
 export default class Week extends React.Component {
     render() {
-        const {group, date}= this.props;
+        const   {name, date} = this.props;
         return (
             <Col
                 md={1}>
-                {`${group && group.name || ""} ${date.date()} `}
+                {`${name || ""} ${date.date()} `}
             </Col>
         )
     }

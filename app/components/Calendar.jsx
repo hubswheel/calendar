@@ -1,5 +1,5 @@
 import { Router, Route, Link } from 'react-router'
-import {List, Map} from 'immutable';
+import {List, Map, fromJS} from 'immutable';
 import {Grid, Row, Col, ButtonGroup, Button, DropdownButton, Badge, Label, Table } from 'react-bootstrap';
 import Header from './CalendarHeader';
 import Week from './Week';
@@ -7,15 +7,10 @@ import Week from './Week';
 export default class Calendar extends React.Component {
     constructor(props) {
         super(props);
-        this.on = this._initializeSignals()
-        this.state = {date: moment()}
-        this.updateConfig(this._getDefaultConfig())
+        this.on = this.getSignals()
+        this.state = {config: fromJS(this.getDefaultConfig()), date: moment()}
     }
-    updateConfig(newConfig) {
-        this.config = newConfig;
-        this.on.configUpdated.dispatch(this.config)
-    }
-    _getDefaultConfig() {
+    getDefaultConfig() {
         return {
             monthTitleFormat: "MM YYYY",
             title: "Default Calendar",
@@ -23,10 +18,10 @@ export default class Calendar extends React.Component {
             dayGroups: null
         }
     }
-    _initializeSignals() {
+    getSignals() {
         const   pairs = List(`
                             dataloaded
-                            dateChangeClicked:_changeDate
+                            dateChangeClicked:changeDate
                             dateChanged
                             configUpdated
                             `
@@ -40,40 +35,40 @@ export default class Calendar extends React.Component {
                 .forEach(pair => on[pair[0]].add(this[pair[1]].bind(this)))
         return on
     }
-    _getWeeks(weeks, displayMonth, startDate, config) {
+    getWeeks(weeks, displayMonth, startDate, config) {
         const isOutOfMonth = startDate.month() + 1 != displayMonth
                             && startDate.clone().add(6, "days").month() + 1 != displayMonth
         return isOutOfMonth
             && weeks
-            || this._getWeeks(weeks.push(
+            || this.getWeeks(weeks.push(
                 <Week
-                    key={`w${startDate.format("YYYYMMDD")}`}
+                    key={`${startDate.week()}`}
                     config={config}
                     on={this.on}
                     date={startDate}
                     month={displayMonth}/>), displayMonth, startDate.clone().add(1, "weeks"), config)
     }
-    _changeDate(quantity, units) {
+    changeDate(quantity, units) {
         this.setState({date: this.state.date.add(quantity, units)})
         this.on.dateChanged.dispatch(this.state.date)
     }
-    _getDayNameList(start, hasGroups) {
+    getDayNameList(start, hasGroups) {
         return (hasGroups && ["*"] || [])
                     .concat([...Array(7).keys()])
                     .map(offset => offset == "*" && " " || start.clone().add(offset, "days").format("dddd"))
     }
     render() {
-        const   month = this.state.date.month() + 1,
-                startDate = this.state.date.clone().startOf("month").startOf("week"),
-                weeks = this._getWeeks(List([]), month, startDate, this.config),
-                dow = this._getDayNameList(startDate, this.config.dayGroups && this.config.dayGroups.length),
-                names = dow.map(name => <Col md={1}>{name}</Col>)
-
+        const   {date, config} = this.state,
+                month = date.month() + 1,
+                startDate = date.clone().startOf("month").startOf("week"),
+                weeks = this.getWeeks(List([]), month, startDate, config),
+                dow = this.getDayNameList(startDate, (config.get("dayGroups") || List()).size),
+                names = dow.map((name, index) => <Col key={index} md={1}>{name}</Col>);
         return (
             <Grid fluid={true}>
                 <Header
-                    date={this.state.date}
-                    config={this.config}
+                    date={date}
+                    config={config}
                     on={this.on}/>
                 <Row>
                     {names}
