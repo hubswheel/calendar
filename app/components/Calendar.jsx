@@ -23,7 +23,6 @@ export default class Calendar extends React.Component {
                             dataloaded
                             dateChangeClicked:changeDate
                             dateChanged
-                            configUpdated
                             `
                         .split(/\n/))
                         .filter(pair => pair)
