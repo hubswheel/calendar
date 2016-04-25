@@ -12,17 +12,22 @@ export default class Calendar extends React.Component {
     }
     getDefaultConfig() {
         return {
-            monthTitleFormat: "MM YYYY",
-            title: "Default Calendar",
-            canShowAdminLink: false,
-            dayGroups: null
+            monthTitleFormat: "MM YYYY", // header +  <> for prev/next
+            dateFormat: "DD", // standard date format for a date displayed in a week
+            dateFormatExtended: "M/DD", // format for 1st day of month change
+            eventDateFormat: "MM/DD/YYYY", // format used in internal event list
+            title: "Default Calendar", // displayed in header
+            canShowAdminLink: false, // true to show admin link (admin page must be in router)
+            dayGroups: null // array of id/name objects which are grouped on each day
         }
+    }
+    loadEvents() {
+        const {start, end} = this.getDisplayDateRange()
+        return {}
     }
     getSignals() {
         const   pairs = List(`
-                            dataloaded
                             dateChangeClicked:changeDate
-                            dateChanged
                             `
                         .split(/\n/))
                         .filter(pair => pair)
@@ -34,22 +39,25 @@ export default class Calendar extends React.Component {
                 .forEach(pair => on[pair[0]].add(this[pair[1]].bind(this)))
         return on
     }
-    getWeeks(weeks, displayMonth, startDate, config) {
-        const isOutOfMonth = startDate.month() + 1 != displayMonth
-                            && startDate.clone().add(6, "days").month() + 1 != displayMonth
-        return isOutOfMonth
+    getDisplayDateRange() {
+        const {date} = this.state;
+        return {start: date.clone().startOf("month").startOf("week"),
+                end: date.clone().endOf("month").endOf("week")}
+    }
+    getWeeks(weeks, displayMonth, start, end, config, eventsByWeek) {
+        return start.isAfter(end)
             && weeks
             || this.getWeeks(weeks.push(
                 <Week
-                    key={`${startDate.week()}`}
+                    key={`${start.week()}`}
                     config={config}
                     on={this.on}
-                    date={startDate}
-                    month={displayMonth}/>), displayMonth, startDate.clone().add(1, "weeks"), config)
+                    date={start}
+                    events={eventsByWeek.get(start.week())}
+                    month={displayMonth}/>), displayMonth, start.clone().add(1, "weeks"), end, config, eventsByWeek)
     }
     changeDate(quantity, units) {
         this.setState({date: this.state.date.add(quantity, units)})
-        this.on.dateChanged.dispatch(this.state.date)
     }
     getDayNameList(start, hasGroups) {
         return (hasGroups && ["*"] || [])
@@ -57,11 +65,11 @@ export default class Calendar extends React.Component {
                     .map(offset => offset == "*" && " " || start.clone().add(offset, "days").format("dddd"))
     }
     render() {
-        const   {date, config} = this.state,
-                month = date.month() + 1,
-                startDate = date.clone().startOf("month").startOf("week"),
-                weeks = this.getWeeks(List([]), month, startDate, config),
-                dow = this.getDayNameList(startDate, (config.get("dayGroups") || List()).size),
+        const   {date, config, events} = this.state,
+                {start, end} = this.getDisplayDateRange(),
+                eventsByWeek = events && events.groupBy(e => e.get("date").week()) || Map(),
+                weeks = this.getWeeks(List([]), date.month() + 1, start, end, config, eventsByWeek),
+                dow = this.getDayNameList(start, (config.get("dayGroups") || List()).size),
                 names = dow.map((name, index) => <Col key={index} md={1}>{name}</Col>);
         return (
             <Grid fluid={true}>
