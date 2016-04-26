@@ -2,7 +2,8 @@ import {Grid, Row, Col, ButtonGroup, Button, DropdownButton, Badge, Label } from
 
 export default class Week extends React.Component {
     render() {
-        const   {name, date} = this.props;
+        const   {name, date, events} = this.props;
+        console.log(date.date(), name, events && events.toJS() || "");
         return (
             <Col
                 md={1}>

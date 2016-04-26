@@ -44,33 +44,38 @@ export default class Calendar extends React.Component {
         return {start: date.clone().startOf("month").startOf("week"),
                 end: date.clone().endOf("month").endOf("week")}
     }
-    getWeeks(weeks, displayMonth, start, end, config, eventsByWeek) {
-        return start.isAfter(end)
+    getWeeks(weeks, displayMonth, weekStart, displayEnd, config, eventsByWeek) {
+        return weekStart.isAfter(displayEnd)
             && weeks
             || this.getWeeks(weeks.push(
                 <Week
-                    key={`${start.week()}`}
+                    key={weekStart.week()}
                     config={config}
                     on={this.on}
-                    date={start}
-                    events={eventsByWeek.get(start.week())}
-                    month={displayMonth}/>), displayMonth, start.clone().add(1, "weeks"), end, config, eventsByWeek)
+                    date={weekStart}
+                    events={eventsByWeek.get(weekStart.week())}
+                    month={displayMonth}/>), displayMonth, weekStart.clone().add(1, "weeks"), displayEnd, config, eventsByWeek)
     }
     changeDate(quantity, units) {
         this.setState({date: this.state.date.add(quantity, units)})
     }
-    getDayNameList(start, hasGroups) {
+    processRawEvents(events, dateFormat) {
+        return fromJS(events)
+                .map(e => e.set("date", moment(e.get("date", "-invalid-"))))
+                .filter(e => e.get("date").isValid()) // silently eliminate invalid dates
+    }
+    getDayNameColumns(start, hasGroups) {
         return (hasGroups && ["*"] || [])
                     .concat([...Array(7).keys()])
                     .map(offset => offset == "*" && " " || start.clone().add(offset, "days").format("dddd"))
+                    .map((name, index) => <Col key={index} md={1}>{name}</Col>)
     }
     render() {
         const   {date, config, events} = this.state,
                 {start, end} = this.getDisplayDateRange(),
                 eventsByWeek = events && events.groupBy(e => e.get("date").week()) || Map(),
                 weeks = this.getWeeks(List([]), date.month() + 1, start, end, config, eventsByWeek),
-                dow = this.getDayNameList(start, (config.get("dayGroups") || List()).size),
-                names = dow.map((name, index) => <Col key={index} md={1}>{name}</Col>);
+                nameCols = this.getDayNameColumns(start, (config.get("dayGroups") || List()).size);
         return (
             <Grid fluid={true}>
                 <Header
@@ -78,7 +83,7 @@ export default class Calendar extends React.Component {
                     config={config}
                     on={this.on}/>
                 <Row>
-                    {names}
+                    {nameCols}
                 </Row>
                 {weeks}
             </Grid>
