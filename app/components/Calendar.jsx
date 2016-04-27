@@ -61,7 +61,7 @@ export default class Calendar extends React.Component {
     }
     processRawEvents(events, dateFormat) {
         return fromJS(events)
-                .map(e => e.set("date", moment(e.get("date", "-invalid-"))))
+                .map(e => e.set("date", moment(e.get("date", "-invalid-"), dateFormat)))
                 .filter(e => e.get("date").isValid()) // silently eliminate invalid dates
     }
     getDayNameColumns(start, hasGroups) {

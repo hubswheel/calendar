@@ -19,7 +19,7 @@ export default class IMACalendar extends Calendar {
                                 groupId: 1, comment: "comment"},
                             {date: "12/04/2016", display: "text2", groupId: 2, comment: "comment 2"},
                             {date: "12/05/2016", comment: "day comment"}]
-        this.setState({events: this.processRawEvents(events, this.state.config.get("eventDateFormat"))})
+        this.setState({events: this.processRawEvents(events, "MM/DD/YYYY")})
     }
     getConfig() {
         return {

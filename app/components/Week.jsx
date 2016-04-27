@@ -11,11 +11,12 @@ export default class Week extends React.Component {
                 s = {style: {border: "solid #ccc 1px", overflow: "auto"}},
                 formats = [config.get("dateFormat"), config.get("dateFormatExtended")],
                 needsExtended = (index, dt) => (!index && dt.month() + 1 != month) || (index && dt.date() == 1),
-                // groupEvents = (dt, group) => !eventsByDay.get(dt.day()) && null // no events today
-                //     || (group === false && dayGroups.size) && eventsByDay.get(dt.day()).filter(e => !e.has("groupId") // find non-group events (i.e. for the day)
-                //     || group === false && null // doesn't have groups, so ignore this request
-                //     || !group.size && eventsByDay.get(dt.day()) // no groups, get them all.
-                //     || eventsByDay.get(dt.day()).filter(e => e.get("groupId") == group.get("id")),
+                dayEvents = dt => eventsByDay.get(dt.day()),
+                groupEvents = (dt, group) => !dayEvents(dt) && List() // no events today
+                    || (group === false && dayGroups.size) && dayEvents(dt).filter(e => !e.has("groupId")) // non-group entry in a calendar with groups
+                    || group === false && List() // ignore request for non-grouped entries if calendar doesn't have groups
+                    || !group.size && dayEvents(dt) // no group - return all events
+                    || dayEvents(dt).filter(e => e.get("groupId") == group.get("id")), // group events for the day
                 numbers = days.map((dt, index) => (
                     <Col
                         key={index}
