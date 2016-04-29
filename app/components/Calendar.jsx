@@ -15,7 +15,6 @@ export default class Calendar extends React.Component {
             monthTitleFormat: "MM YYYY", // header +  <> for prev/next
             dateFormat: "DD", // standard date format for a date displayed in a week
             dateFormatExtended: "M/DD", // format for 1st day of month change
-            eventDateFormat: "MM/DD/YYYY", // format used in internal event list
             title: "Default Calendar", // displayed in header
             canShowAdminLink: false, // true to show admin link (admin page must be in router)
             dayGroups: null // array of id/name objects which are grouped on each day
