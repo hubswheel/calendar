@@ -1,4 +1,5 @@
 import { Router, Route, Link } from 'react-router'
+import Icon from 'react-fa'
 
 export default class Header extends React.Component {
     render() {

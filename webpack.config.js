@@ -8,7 +8,9 @@ const PATHS = {
     style: [
         path.join(__dirname, 'node_modules/react-fa/node_modules/font-awesome'), // use resolve?
         path.join(__dirname, 'node_modules/bootstrap/dist/css'),
-        path.join(__dirname, 'node_modules/bootstrap/dist/fonts')
+        path.join(__dirname, 'node_modules/bootstrap/dist/fonts'),
+        path.join(__dirname, 'node_modules/font-awesome/css'),
+        path.join(__dirname, 'node_modules/font-awesome/fonts')
     ],
     build: path.join(__dirname, 'build')
 };
@@ -76,12 +78,8 @@ if (TARGET === 'start' || !TARGET) {
             port: process.env.PORT
         },
         plugins: [
-            new webpack.HotModuleReplacementPlugin(),
-            new NpmInstallPlugin({
-                save: true // --save
-            })
-        ]
-    });
+            new webpack.HotModuleReplacementPlugin()        ]
+    }); // plugin: new NpmInstallPlugin({save: true})
 }
 
 if (TARGET === 'build') {

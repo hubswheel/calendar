@@ -1,5 +1,6 @@
 {
   "babelSourcePath": "app/components",
+  "babelTranspilePath": "app/components",
   "createTranspiledCode": false,
   "transpileOnSave": true,
   "suppressTranspileOnSaveMessages": false,
